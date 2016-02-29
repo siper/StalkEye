@@ -33,7 +33,6 @@
         </receiver>
         <!-- [END gcm_receiver] -->
 
-
         <!-- [START gcm_listener] -->
         <service
             android:name=".MyGcmListenerService"
@@ -43,6 +42,7 @@
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
+
         <!-- [START instanceId_listener] -->
         <service
             android:name=".MyInstanceIDListenerService"
@@ -52,9 +52,11 @@
             </intent-filter>
         </service>
         <!-- [END instanceId_listener] -->
+
         <service
             android:name=".RegistrationIntentService"
-            android:exported="false"></service>
+            android:exported="false">
+        </service>
 
     </application>
 

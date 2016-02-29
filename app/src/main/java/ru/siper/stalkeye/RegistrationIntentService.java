@@ -16,18 +16,18 @@ package ru.siper.stalkeye;
  * limitations under the License.
  */
 
-        import android.app.IntentService;
-        import android.content.Intent;
-        import android.content.SharedPreferences;
-        import android.preference.PreferenceManager;
-        import android.support.v4.content.LocalBroadcastManager;
-        import android.util.Log;
+import android.app.IntentService;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
-        import com.google.android.gms.gcm.GcmPubSub;
-        import com.google.android.gms.gcm.GoogleCloudMessaging;
-        import com.google.android.gms.iid.InstanceID;
+import com.google.android.gms.gcm.GcmPubSub;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 
-        import java.io.IOException;
+import java.io.IOException;
 
 public class RegistrationIntentService extends IntentService {
 

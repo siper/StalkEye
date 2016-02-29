@@ -14,26 +14,23 @@ package ru.siper.stalkeye;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-        import android.app.NotificationManager;
-        import android.app.PendingIntent;
-        import android.content.ContentValues;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.database.sqlite.SQLiteDatabase;
-        import android.database.sqlite.SQLiteOpenHelper;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.media.RingtoneManager;
-        import android.net.Uri;
-        import android.os.Bundle;
-        import android.support.v4.app.NotificationCompat;
-        import android.util.Log;
-
-        import com.google.android.gms.gcm.GcmListenerService;
-
-        import java.text.SimpleDateFormat;
-        import java.util.Date;
-        import java.util.Random;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+import com.google.android.gms.gcm.GcmListenerService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Random;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -41,13 +38,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
 
-    /**
-     * Called when message is received.
-     *
-     * @param from SenderID of the sender.
-     * @param data Data bundle containing message data as key/value pairs.
-     *             For Set of keys use data.keySet().
-     */
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
@@ -61,36 +51,21 @@ public class MyGcmListenerService extends GcmListenerService {
         String msg_title = data.getString("title");
         String msg_priority = data.getString("priority");
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
         // Создадим объект Date
-        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm\ndd.MM.yyyy");
+        SimpleDateFormat date_format = new SimpleDateFormat("HH:mm\ndd.MM.yyyy", Locale.US);
 
         // создаем объект для данных
-        ContentValues cv = new ContentValues();
+        ContentValues content_to_insert = new ContentValues();
 
-        cv.put("message_title", msg_title);
-        cv.put("message_text", msg_text);
-        cv.put("message_priority", msg_priority);
-        cv.put("message_date", format1.format(new Date()));
+        content_to_insert.put("message_title", msg_title);
+        content_to_insert.put("message_text", msg_text);
+        content_to_insert.put("message_priority", msg_priority);
+        content_to_insert.put("message_date", date_format.format(new Date()));
         // вставляем запись и получаем ее ID
-        long rowID = db.insert("notifications", null, cv);
+        long rowID = db.insert("notifications", null, content_to_insert);
         Log.i(TAG, "Row id: " + Long.toString(rowID));
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
+        // [START_EXCLUDE]
         sendNotification(msg_title, msg_text, msg_priority);
         // [END_EXCLUDE]
     }
@@ -108,27 +83,27 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_ONE_SHOT);
         int color;
         int small_icon;
-        if(priority.equals("1")){
-            color = 0xFFFF0000;
-            small_icon = R.mipmap.ic_red;
+        switch(Integer.parseInt(priority)) {
+            case 1:
+                small_icon = R.mipmap.ic_red;
+                color = 0xFFFF0000;
+                break;
+            case 2:
+                small_icon = R.mipmap.ic_yellow;
+                color = 0xFFFFFF00;
+                break;
+            case 3:
+                small_icon = R.mipmap.ic_green;
+                color = 0xFF33CC00;
+                break;
+            default:
+                small_icon = R.mipmap.ic_gray;
+                color = 0xFF00FFFF;
+                break;
         }
-        else if(priority.equals("2")){
-            color = 0xFFFFFF00;
-            small_icon = R.mipmap.ic_yellow;
-        }
-        else if(priority.equals("3")){
-            color = 0xFF33CC00;
-            small_icon = R.mipmap.ic_green;
-        }
-        else {
-            color = 0xFF00FFFF;
-            small_icon = R.mipmap.ic_gray;
-        }
-        Bitmap large_icon = BitmapFactory.decodeResource(getResources(), small_icon);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(small_icon)
-                .setLargeIcon(large_icon)
                 .setContentTitle(title)
                 .setLights(color, 500, 500)
                 .setContentText(message)
@@ -139,9 +114,9 @@ public class MyGcmListenerService extends GcmListenerService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        final Random random = new Random();
+        final Random notification_id = new Random();
 
-        notificationManager.notify(random.nextInt() /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(notification_id.nextInt(), notificationBuilder.build());
     }
     class DBHelper extends SQLiteOpenHelper {
 

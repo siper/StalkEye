@@ -1,9 +1,7 @@
 package ru.siper.stalkeye;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,12 +10,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -26,11 +22,9 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -115,15 +109,14 @@ public class MainActivity extends AppCompatActivity {
         // делаем запрос всех данных из таблицы notifications, получаем Cursor
         Cursor c = db.query("notifications", null, null, null, null, null, "message_date DESC");
         // массивы данных
-        ArrayList <String> message_title = new ArrayList<String>();
-        ArrayList <String> message_text = new ArrayList<String>();
-        ArrayList <String> message_date = new ArrayList<String>();
-        ArrayList <Integer> message_image = new ArrayList<Integer>();
+        ArrayList <String> message_title = new ArrayList<>();
+        ArrayList <String> message_text = new ArrayList<>();
+        ArrayList <String> message_date = new ArrayList<>();
+        ArrayList <Integer> message_image = new ArrayList<>();
         // ставим позицию курсора на первую строку выборки
         // если в выборке нет строк, вернется false
         if (c.moveToFirst()) {
             // определяем номера столбцов по имени в выборке
-            //int idColIndex = c.getColumnIndex("id");
             int titleColIndex = c.getColumnIndex("message_title");
             int textColIndex = c.getColumnIndex("message_text");
             int priorityColIndex = c.getColumnIndex("message_priority");
@@ -132,23 +125,21 @@ public class MainActivity extends AppCompatActivity {
                 message_title.add(c.getString(titleColIndex));
                 message_text.add(c.getString(textColIndex));
                 message_date.add(c.getString(dateColIndex));
-                String priority = c.getString(priorityColIndex);
-                Log.i(TAG, "Priority: " + priority);
-                if(priority.equals("3"))
-                {
-                    message_image.add(R.mipmap.ic_green);
-                }
-                else if(priority.equals("2"))
-                {
-                    message_image.add(R.mipmap.ic_yellow);
-                }
-                else if(priority.equals("1"))
-                {
-                    message_image.add(R.mipmap.ic_red);
-                }
-                else
-                {
-                    message_image.add(R.mipmap.ic_gray);
+                int message_priority = Integer.parseInt(c.getString(priorityColIndex));
+                Log.i(TAG, "Priority: " + message_priority);
+                switch(message_priority) {
+                    case 1:
+                        message_image.add(R.mipmap.ic_red);
+                        break;
+                    case 2:
+                        message_image.add(R.mipmap.ic_yellow);
+                        break;
+                    case 3:
+                        message_image.add(R.mipmap.ic_green);
+                        break;
+                    default:
+                        message_image.add(R.mipmap.ic_gray);
+                        break;
                 }
             } while (c.moveToNext());
         } else
@@ -156,11 +147,10 @@ public class MainActivity extends AppCompatActivity {
         c.close();
 
         // упаковываем данные в понятную для адаптера структуру
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(
-                message_title.toArray().length);
+        ArrayList<Map<String, Object>> data = new ArrayList<>(message_title.toArray().length);
         Map<String, Object> m;
         for (int i = 0; i < message_title.toArray().length; i++) {
-            m = new HashMap<String, Object>();
+            m = new HashMap<>();
             m.put(ATTRIBUTE_NAME_MESSAGE_TITLE, message_title.toArray()[i]);
             m.put(ATTRIBUTE_NAME_MESSAGE_TEXT, message_text.toArray()[i]);
             m.put(ATTRIBUTE_NAME_MESSAGE_DATE, message_date.toArray()[i]);
@@ -171,12 +161,12 @@ public class MainActivity extends AppCompatActivity {
         // массив имен атрибутов, из которых будут читаться данные
         String[] from = { ATTRIBUTE_NAME_MESSAGE_TITLE, ATTRIBUTE_NAME_MESSAGE_TEXT,
                 ATTRIBUTE_NAME_MESSAGE_DATE, ATTRIBUTE_NAME_IMAGE };
+
         // массив ID View-компонентов, в которые будут вставлять данные
         int[] to = { R.id.MessageTitle, R.id.MessageText, R.id.MessageDate, R.id.MessageImage };
 
         // создаем адаптер
-        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.item,
-                from, to);
+        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.item, from, to);
 
         // определяем список и присваиваем ему адаптер
         NotificationLV = (ListView) findViewById(R.id.NotificationLV);
