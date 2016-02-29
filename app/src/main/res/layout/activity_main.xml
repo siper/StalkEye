@@ -1,0 +1,51 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/background_light"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/registrationProgressBar"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fab_margin" />
+
+        <TextView
+            android:text="@string/registering_message"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/registrationProgressBar"
+            android:id="@+id/informationTextView"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/NotificationLV"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/abc_dropdownitem_text_padding_left"
+        android:layout_marginRight="@dimen/abc_dropdownitem_text_padding_right"
+        tools:listitem="@android:layout/simple_list_item_2">
+    </ListView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/UpdateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/stat_notify_sync"
+        android:onClick="onUpdateButtonClick"
+        android:clickable="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_alignEnd="@id/NotificationLV"
+        android:layout_alignParentBottom="true">
+    </android.support.design.widget.FloatingActionButton>
+</RelativeLayout>
