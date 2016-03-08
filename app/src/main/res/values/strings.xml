@@ -6,5 +6,41 @@
     <string name="token_error_message">An error occurred while either fetching the InstanceID token,
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>
-    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="action_settings">Настройки</string>
+
+    <string name="pref_notifications_switch">Push-уведомления</string>
+    <string name="pref_notifications_summary">Включить мгновенные уведомления о новых событиях</string>
+    <string name="pref_notifications_title">Уведомления</string>
+
+    <string name="pref_notifications_vibro_title">Вибрация</string>
+    <string name="pref_notifications_vibro_summary">Включить вибрацию</string>
+
+    <string name="pref_notifications_vibro_value_title">Длительность</string>
+    <string name="pref_notifications_vibro_value_summary">Длительность вибрации</string>
+
+    <string name="pref_notifications_led_title">Светодиод</string>
+    <string name="pref_notifications_led_summary">Использовать светодиод для уведомлений</string>
+
+    <string name="pref_notifications_led_color_set_title">Цвет</string>
+    <string name="pref_notifications_led_color_set_summary">Цвет светодиода</string>
+
+    <string name="pref_db_settings_title">База данных</string>
+
+    <string name="pref_db_limit_summary">Включить лимит записей в базе данных</string>
+    <string name="pref_db_limit_title">Лимит</string>
+
+    <string name="pref_db_limit_value_title">Кол-во записей</string>
+    <string name="pref_db_limit_value_summary">Максимальное кол-во записей в базе данных</string>
+
+    <string name="pref_clear_db_title">Очистка БД</string>
+    <string name="pref_clear_db_summary">Полная очистка базы данных</string>
+
+    <string name="pref_color_red">Красный</string>
+    <string name="pref_color_blue">Синий</string>
+    <string name="pref_color_aqua">Голубой</string>
+    <string name="pref_color_green">Зеленый</string>
+    <string name="pref_color_yellow">Желтый</string>
+    <string name="pref_color_white">Белый</string>
+    <string name="pref_color_violet">Фиолетовый</string>
 </resources>

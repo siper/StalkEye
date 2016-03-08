@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="colors_list_names">
+        <item>@string/pref_color_red</item>
+        <item>@string/pref_color_blue</item>
+        <item>@string/pref_color_aqua</item>
+        <item>@string/pref_color_white</item>
+        <item>@string/pref_color_green</item>
+        <item>@string/pref_color_yellow</item>
+        <item>@string/pref_color_violet</item>
+    </string-array>
+
+    <string-array name="colors_list_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+</resources>

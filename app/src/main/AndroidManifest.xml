@@ -12,12 +12,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings">
         </activity>
 
         <!-- [START gcm_receiver] -->
@@ -33,6 +40,7 @@
         </receiver>
         <!-- [END gcm_receiver] -->
 
+
         <!-- [START gcm_listener] -->
         <service
             android:name=".MyGcmListenerService"
@@ -42,6 +50,7 @@
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
+
 
         <!-- [START instanceId_listener] -->
         <service

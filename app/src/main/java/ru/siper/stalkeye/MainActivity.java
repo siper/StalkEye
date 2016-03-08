@@ -12,7 +12,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView NotificationLV;
     DBHelper dbHelper;
+    SharedPreferences sp;
 
     public void onUpdateButtonClick(View view)
     {
@@ -57,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         mRegistrationProgressBar = (ProgressBar) findViewById(R.id.registrationProgressBar);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences
-                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                        .getBoolean(Preferences.SENT_TOKEN_TO_SERVER, false);
                 if (sentToken) {
                     mInformationTextView.setVisibility(View.GONE);
                 } else {
@@ -89,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+                new IntentFilter(Preferences.REGISTRATION_COMPLETE));
         update_notifications();
     }
 
@@ -106,8 +114,29 @@ public class MainActivity extends AppCompatActivity {
         // подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        if(sp.getBoolean("pref_db_limit_switch", false)){
+            Cursor d = db.query("notifications", null, null, null, null, null,
+                    "message_date_millis");
+            //Log.i(TAG, Integer.toString(d.getCount()));
+            int db_limit = Integer.parseInt(sp.getString("pref_db_limit_value", "20"));
+            if(d.getCount() >= db_limit){
+                //Log.i(TAG, "DB Limit");
+                if (d.moveToFirst()) {
+                    int idColIndex = d.getColumnIndex("id");
+                    for (int i = 0; i < (d.getCount() - db_limit); i++) {
+                        int delCount = db.delete("notifications", "id = "
+                                + d.getString(idColIndex), null);
+                        Log.i(TAG, "deleted rows count = " + delCount);
+                        d.moveToNext();
+                    }
+                }
+            }
+            d.close();
+        }
+
         // делаем запрос всех данных из таблицы notifications, получаем Cursor
-        Cursor c = db.query("notifications", null, null, null, null, null, "message_date DESC");
+        Cursor c = db.query("notifications", null, null, null, null, null,
+                "message_date_millis DESC");
         // массивы данных
         ArrayList <String> message_title = new ArrayList<>();
         ArrayList <String> message_text = new ArrayList<>();
@@ -125,17 +154,19 @@ public class MainActivity extends AppCompatActivity {
                 message_title.add(c.getString(titleColIndex));
                 message_text.add(c.getString(textColIndex));
                 message_date.add(c.getString(dateColIndex));
-                int message_priority = Integer.parseInt(c.getString(priorityColIndex));
-                Log.i(TAG, "Priority: " + message_priority);
-                switch(message_priority) {
-                    case 1:
+                //Log.i(TAG, "Priority: " + message_priority);
+                switch(c.getString(priorityColIndex)) {
+                    case "1":
                         message_image.add(R.mipmap.ic_red);
                         break;
-                    case 2:
+                    case "2":
                         message_image.add(R.mipmap.ic_yellow);
                         break;
-                    case 3:
+                    case "3":
                         message_image.add(R.mipmap.ic_green);
+                        break;
+                    case "4":
+                        message_image.add(R.mipmap.ic_blue);
                         break;
                     default:
                         message_image.add(R.mipmap.ic_gray);
@@ -145,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         } else
             Log.i(TAG, "0 rows");
         c.close();
-
+        db.close();
         // упаковываем данные в понятную для адаптера структуру
         ArrayList<Map<String, Object>> data = new ArrayList<>(message_title.toArray().length);
         Map<String, Object> m;
@@ -208,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                     + "message_title text,"
                     + "message_text text,"
                     + "message_priority text,"
+                    + "message_date_millis text,"
                     + "message_date text" + ");");
         }
 
@@ -215,6 +247,13 @@ public class MainActivity extends AppCompatActivity {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuItem mi = menu.add(0, 1, 0, R.string.action_settings);
+        mi.setIntent(new Intent(this, SettingsActivity.class));
+        return super.onCreateOptionsMenu(menu);
     }
 
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <PreferenceCategory
+        android:title="@string/pref_notifications_title"
+        android:key="pref_key_notifications_title">
+
+        <CheckBoxPreference
+            android:key="pref_notifications_switch"
+            android:summary="@string/pref_notifications_summary"
+            android:title="@string/pref_notifications_title"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:key="pref_notifications_vibro_switch"
+            android:summary="@string/pref_notifications_vibro_summary"
+            android:title="@string/pref_notifications_vibro_title"
+            android:dependency="pref_notifications_switch"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+        <EditTextPreference
+            android:key="pref_notifications_vibro_value"
+            android:summary="@string/pref_notifications_vibro_value_summary"
+            android:title="@string/pref_notifications_vibro_value_title"
+            android:dependency="pref_notifications_vibro_switch"
+            android:defaultValue="200"
+            android:inputType="number">
+        </EditTextPreference>
+        <CheckBoxPreference
+            android:key="pref_notifications_led_switch"
+            android:summary="@string/pref_notifications_led_summary"
+            android:title="@string/pref_notifications_led_title"
+            android:dependency="pref_notifications_switch"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+        <ListPreference
+            android:key="pref_notifications_led_color_set"
+            android:summary="@string/pref_notifications_led_color_set_summary"
+            android:title="@string/pref_notifications_led_color_set_title"
+            android:entries="@array/colors_list_names"
+            android:entryValues="@array/colors_list_values"
+            android:dependency="pref_notifications_led_switch"
+            android:defaultValue="3">
+        </ListPreference>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_db_settings_title"
+        android:key="pref_key_notifications_title">
+        <CheckBoxPreference
+            android:key="pref_db_limit_switch"
+            android:summary="@string/pref_db_limit_summary"
+            android:title="@string/pref_db_limit_title">
+        </CheckBoxPreference>
+        <EditTextPreference
+            android:key="pref_db_limit_value"
+            android:summary="@string/pref_db_limit_value_summary"
+            android:title="@string/pref_db_limit_value_title"
+            android:dependency="pref_db_limit_switch">
+        </EditTextPreference>
+    </PreferenceCategory>
+</PreferenceScreen>
