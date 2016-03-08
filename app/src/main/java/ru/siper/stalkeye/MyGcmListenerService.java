@@ -60,6 +60,16 @@ public class MyGcmListenerService extends GcmListenerService {
         String msg_priority = data.getString("priority");
         String msg_url = data.getString("subtext");
 
+        // Проверяем длинну строки, если она больше 30 символов, то переносим по следующему пробелу
+        if(msg_text.length() > 20) {
+            int str_index = msg_text.indexOf(" ", 30);
+            if(str_index != -1) {
+                msg_text = msg_text.substring(0, str_index) + "\n" + msg_text.substring(str_index+1);
+            }
+        } else {
+            Log.i(TAG, "Message is empty");
+        }
+
         // Создадим объект Date
         Date date = new Date();
         SimpleDateFormat date_format = new SimpleDateFormat("HH:mm\ndd.MM.yyyy", Locale.US);
@@ -119,7 +129,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 .setSound(defaultSoundUri);
 
         // Проверка на наличие url
-        if (!url.equals("")) {
+        if (url.startsWith("http://")) {
             Context context = getApplicationContext();
             Intent notificationIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
