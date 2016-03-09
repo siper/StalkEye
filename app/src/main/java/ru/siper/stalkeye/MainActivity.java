@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mRegistrationProgressBar;
     private TextView mInformationTextView;
 
-    // имена атрибутов для Map
+    // Имена атрибутов списка для Map
     final String ATTRIBUTE_NAME_MESSAGE_TITLE = "title";
     final String ATTRIBUTE_NAME_MESSAGE_TEXT = "text";
     final String ATTRIBUTE_NAME_MESSAGE_DATE = "date";
@@ -50,10 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onUpdateButtonClick(View view)
     {
-        // подключаемся к БД
-        //SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //int clearCount = db.delete("notifications", null, null);
-        //Log.i(TAG, "deleted rows count = " + clearCount);
         update_notifications();
     }
 
@@ -86,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         mInformationTextView = (TextView) findViewById(R.id.informationTextView);
 
         if (checkPlayServices()) {
-            // Start IntentService to register this application with GCM.
+            // Запуск сервиса для регистрации на сервере GCM.
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
@@ -108,19 +104,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void update_notifications() {
-        // создаем объект для создания и управления версиями БД
+        // Создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
 
-        // подключаемся к БД
+        // Подключаемся к БД
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        // Проверка на лимит записей в таблице, если есть - удаляем лишние записи
         if(sp.getBoolean("pref_db_limit_switch", false)){
             Cursor d = db.query("notifications", null, null, null, null, null,
                     "message_date_millis");
-            //Log.i(TAG, Integer.toString(d.getCount()));
             int db_limit = Integer.parseInt(sp.getString("pref_db_limit_value", "20"));
             if(d.getCount() >= db_limit){
-                //Log.i(TAG, "DB Limit");
                 if (d.moveToFirst()) {
                     int idColIndex = d.getColumnIndex("id");
                     for (int i = 0; i < (d.getCount() - db_limit); i++) {
@@ -134,18 +129,17 @@ public class MainActivity extends AppCompatActivity {
             d.close();
         }
 
-        // делаем запрос всех данных из таблицы notifications, получаем Cursor
+        // Делаем запрос всех данных из таблицы notifications, получаем Cursor
         Cursor c = db.query("notifications", null, null, null, null, null,
                 "message_date_millis DESC");
-        // массивы данных
+        // Массивы данных
         ArrayList <String> message_title = new ArrayList<>();
         ArrayList <String> message_text = new ArrayList<>();
         ArrayList <String> message_date = new ArrayList<>();
         ArrayList <Integer> message_image = new ArrayList<>();
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
+        // Ставим позицию курсора на первую строку выборки
         if (c.moveToFirst()) {
-            // определяем номера столбцов по имени в выборке
+            // Определяем номера столбцов по имени в выборке
             int titleColIndex = c.getColumnIndex("message_title");
             int textColIndex = c.getColumnIndex("message_text");
             int priorityColIndex = c.getColumnIndex("message_priority");
@@ -154,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 message_title.add(c.getString(titleColIndex));
                 message_text.add(c.getString(textColIndex));
                 message_date.add(c.getString(dateColIndex));
-                //Log.i(TAG, "Priority: " + message_priority);
+                // Выбираем иконку в зависимости от приоритета уведомления
                 switch(c.getString(priorityColIndex)) {
                     case "1":
                         message_image.add(R.mipmap.ic_red);
@@ -177,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, "0 rows");
         c.close();
         db.close();
-        // упаковываем данные в понятную для адаптера структуру
+
+        // Упаковываем данные в понятную для адаптера структуру
         ArrayList<Map<String, Object>> data = new ArrayList<>(message_title.toArray().length);
         Map<String, Object> m;
         for (int i = 0; i < message_title.toArray().length; i++) {
@@ -189,17 +184,17 @@ public class MainActivity extends AppCompatActivity {
             data.add(m);
         }
 
-        // массив имен атрибутов, из которых будут читаться данные
+        // Массив имен атрибутов, из которых будут читаться данные
         String[] from = { ATTRIBUTE_NAME_MESSAGE_TITLE, ATTRIBUTE_NAME_MESSAGE_TEXT,
                 ATTRIBUTE_NAME_MESSAGE_DATE, ATTRIBUTE_NAME_IMAGE };
 
-        // массив ID View-компонентов, в которые будут вставлять данные
+        // Массив ID View-компонентов, в которые будут вставлять данные
         int[] to = { R.id.MessageTitle, R.id.MessageText, R.id.MessageDate, R.id.MessageImage };
 
-        // создаем адаптер
+        // Создаем адаптер
         SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.item, from, to);
 
-        // определяем список и присваиваем ему адаптер
+        // Определяем список и присваиваем ему адаптер
         NotificationLV = (ListView) findViewById(R.id.NotificationLV);
         NotificationLV.setAdapter(sAdapter);
     }
@@ -227,13 +222,13 @@ public class MainActivity extends AppCompatActivity {
     class DBHelper extends SQLiteOpenHelper {
 
         public DBHelper(Context context) {
-            // конструктор суперкласса
+            // Конструктор суперкласса
             super(context, "notifications_db", null, 1);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            // создаем таблицу с полями
+            // Создаем таблицу с полями
             db.execSQL("create table notifications ("
                     + "id integer primary key,"
                     + "message_title text,"
@@ -250,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Создаем верхнее меню, добавляем настройки
         MenuItem mi = menu.add(0, 1, 0, R.string.action_settings);
         mi.setIntent(new Intent(this, SettingsActivity.class));
         return super.onCreateOptionsMenu(menu);

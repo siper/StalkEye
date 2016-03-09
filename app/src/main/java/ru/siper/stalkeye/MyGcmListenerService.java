@@ -134,7 +134,8 @@ public class MyGcmListenerService extends GcmListenerService {
             notificationBuilder.setContentIntent(pendingIntent);
         }
 
-        // Вибрация
+        // Настройка вибрации
+        // TODO: Найти более кастыльное решение
         if (sp.getBoolean("pref_notifications_vibro_switch", true)) {
             long[] vibro_array = new long[2];
             long vibro = Long.parseLong(sp.getString("pref_notifications_vibro_value", "200"));
@@ -143,7 +144,7 @@ public class MyGcmListenerService extends GcmListenerService {
             notificationBuilder.setVibrate(vibro_array);
         }
 
-        // LED
+        // Настройка LED
         if (sp.getBoolean("pref_notification_led_switch", true)) {
             int color;
             switch (sp.getString("pref_notifications_led_color_set", "4")) {
@@ -186,7 +187,7 @@ public class MyGcmListenerService extends GcmListenerService {
     class DBHelper extends SQLiteOpenHelper {
 
         public DBHelper(Context context) {
-            // конструктор суперкласса
+            // Конструктор суперкласса
             super(context, "notifications_db", null, 1);
         }
 
