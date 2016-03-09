@@ -61,22 +61,4 @@
             android:dependency="pref_db_limit_switch">
         </EditTextPreference>
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/pref_interface_title"
-        android:key="pref_key_interface_title">
-        <CheckBoxPreference
-            android:key="pref_interface_stringlimit_switch"
-            android:summary="@string/pref_interface_stringlimit_summary"
-            android:title="@string/pref_interface_stringlimit_title"
-            android:defaultValue="true">
-        </CheckBoxPreference>
-        <EditTextPreference
-            android:key="pref_notifications_stringlimit_value"
-            android:summary="@string/pref_interface_stringlimit_value_summary"
-            android:title="@string/pref_interface_stringlimit_value_title"
-            android:dependency="pref_interface_stringlimit_switch"
-            android:defaultValue="30"
-            android:inputType="number">
-        </EditTextPreference>
-    </PreferenceCategory>
 </PreferenceScreen>

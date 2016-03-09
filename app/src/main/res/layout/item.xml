@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="horizontal">
     <ImageView
         android:id="@+id/MessageImage"
@@ -10,19 +10,17 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_gray"
         android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-        android:layout_centerVertical="true">
+        android:layout_margin="@dimen/abc_action_bar_subtitle_bottom_margin_material">
     </ImageView>
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:orientation="vertical"
-        android:layout_toRightOf="@+id/MessageImage"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical">
+        android:layout_weight="1">
         <TextView
             android:id="@+id/MessageTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="MessageTitle"
             style="@android:style/TextAppearance.DeviceDefault.Small"
@@ -30,24 +28,21 @@
         </TextView>
         <TextView
             android:id="@+id/MessageText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="MessageText"
-            android:layout_toRightOf="@+id/MessageImage"
-            android:layout_alignBottom="@+id/MessageTitle"
             style="@android:style/TextAppearance.DeviceDefault.Small">
         </TextView>
     </LinearLayout>
     <TextView
         android:id="@+id/MessageDate"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:text="MessageDate"
-        android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-        android:layout_gravity="center"
-        android:gravity="center_vertical|end"
+        android:gravity="center_vertical|right"
         style="@android:style/TextAppearance.DeviceDefault.Small"
-        android:textSize="@dimen/abc_text_size_caption_material">
+        android:textSize="@dimen/abc_text_size_caption_material"
+        android:layout_gravity="right">
     </TextView>
-</RelativeLayout>
+</LinearLayout>
